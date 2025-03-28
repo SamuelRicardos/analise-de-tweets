@@ -16,7 +16,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**", "/cidadao/**")
+                        .ignoringRequestMatchers("/h2-console/**", "/usuario/**", "/api/kafka/**")
                 )
                 .headers(headers -> headers
                         .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin
@@ -24,11 +24,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/cidadao/").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/cidadao/{id}").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/cidadao/").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/cidadao/{id}").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/cidadao/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuario/").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/usuario/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/usuario/").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/usuario/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/usuario/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/kafka/send").permitAll()
                         .anyRequest().authenticated()
                 );
 
