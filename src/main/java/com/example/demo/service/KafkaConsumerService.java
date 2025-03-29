@@ -1,5 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.model.Mensagem;
+import com.example.demo.repository.MensagemRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +19,9 @@ public class KafkaConsumerService {
     private final AtomicInteger totalPositivos = new AtomicInteger(0);
     private final AtomicInteger totalNegativos = new AtomicInteger(0);
 
+    @Autowired
+    private MensagemRepository mensagemRepository;
+
     @KafkaListener(topics = "tweets", groupId = "meu-grupo")
     public void listen(String message) {
         totalTweets.incrementAndGet();
@@ -24,15 +30,24 @@ public class KafkaConsumerService {
         boolean isPositivo = palavrasPositivas.stream().anyMatch(mensagemLower::contains);
         boolean isNegativo = palavrasNegativas.stream().anyMatch(mensagemLower::contains);
 
+        String sentimento;
         if (isPositivo) {
             totalPositivos.incrementAndGet();
-            System.out.println("[Mensagem positiva]: " + message);
+            sentimento = "Positivo";
         } else if (isNegativo) {
             totalNegativos.incrementAndGet();
-            System.out.println("[Mensagem negativa]: " + message);
+            sentimento = "Negativo";
         } else {
-            System.out.println("[Mensagem descartada]: " + message);
+            sentimento = "Neutro";
         }
+
+        Mensagem mensagem = new Mensagem();
+        mensagem.setMensagem(message);
+        mensagem.setSentimento(sentimento);
+
+        mensagemRepository.save(mensagem);
+
+        System.out.println("[" + sentimento + "] " + message);
 
         imprimirEstatisticas();
     }
