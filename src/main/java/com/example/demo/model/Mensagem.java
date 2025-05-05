@@ -6,10 +6,18 @@ import jakarta.persistence.*;
 @Table(name="mensagens")
 public class Mensagem {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_mensagem;
-
     private String mensagem;
+    private String sentimento;
+
+    public String getSentimento() {
+        return sentimento;
+    }
+
+    public void setSentimento(String sentimento) {
+        this.sentimento = sentimento;
+    }
 
     public Long getId_mensagem() {
         return id_mensagem;
